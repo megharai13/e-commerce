@@ -1,7 +1,11 @@
 import React, { useState } from "react";
+import { auth, fs } from "../Config/Config";
 import { Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 export const Signup = () => {
+  const history = useHistory();
+
   const [fullName, setFullname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -11,7 +15,36 @@ export const Signup = () => {
 
   const handleSignup = (e) => {
     e.preventDefault();
-    console.log(fullName, email, password);
+    // console.log(fullName, email, password);
+    auth
+      .createUserWithEmailAndPassword(email, password)
+      .then((credentials) => {
+        console.log(credentials);
+        fs.collection("users")
+          .doc(credentials.user.uid)
+          .set({
+            FullName: fullName,
+            Email: email,
+            Password: password,
+          })
+          .then(() => {
+            setSuccessMsg(
+              "Signup Successfull. You will now automatically get redirected to Login"
+            );
+            setFullname("");
+            setEmail("");
+            setPassword("");
+            setErrorMsg("");
+            setTimeout(() => {
+              setSuccessMsg("");
+              history.push("/login");
+            }, 3000);
+          })
+          .catch((error) => setErrorMsg(error.message));
+      })
+      .catch((error) => {
+        setErrorMsg(error.message);
+      });
   };
 
   return (
@@ -21,6 +54,11 @@ export const Signup = () => {
       <br />
       <h1>Sign up</h1>
       <hr />
+      {successMsg && (
+        <>
+          <div className="success-msg">{successMsg}</div>
+        </>
+      )}
       <form className="form-group" autoComplete="off" onSubmit={handleSignup}>
         <label>Full Name</label>
         <input
@@ -61,6 +99,12 @@ export const Signup = () => {
           </button>
         </div>
       </form>
+      {errorMsg && (
+        <>
+          <div className="error-msg">errorMsg</div>
+          <br />
+        </>
+      )}
     </div>
   );
 };
