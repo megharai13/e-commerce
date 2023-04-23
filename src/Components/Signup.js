@@ -101,8 +101,9 @@ export const Signup = () => {
       </form>
       {errorMsg && (
         <>
-          <div className="error-msg">errorMsg</div>
           <br />
+
+          <div className="error-msg">errorMsg</div>
         </>
       )}
     </div>
