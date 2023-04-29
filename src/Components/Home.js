@@ -60,6 +60,19 @@ export const Home = (props) => {
     getProducts();
   }, []);
 
+  const [totalProducts, setTotalProducts] = useState(0);
+  // getting cart products
+  useEffect(() => {
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        fs.collection("Cart " + user.uid).onSnapshot((snapshot) => {
+          const qty = snapshot.docs.length;
+          setTotalProducts(qty);
+        });
+      }
+    });
+  }, []);
+
   let Product;
   const addToCart = (product) => {
     if (uid !== null) {

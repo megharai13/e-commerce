@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Navbar } from "./Navbar";
 import { auth, fs } from "../Config/Config";
 import { CartProducts } from "./CartProducts";
+import StripeCheckout from "react-stripe-checkout";
 
 export const Cart = () => {
   function GetCurrentUser() {
@@ -42,6 +43,24 @@ export const Cart = () => {
       }
     });
   }, []);
+
+  const qty = cartProducts.map((cartProduct) => {
+    return cartProduct.qty;
+  });
+
+  const reducerOfQty = (accumulator, currentValue) =>
+    accumulator + currentValue;
+
+  const totalQty = qty.reduce(reducerOfQty, 0);
+
+  const price = cartProducts.map((cartProduct) => {
+    return cartProduct.TotalProductPrice;
+  });
+
+  const reducerOfPrice = (accumulator, currentValue) =>
+    accumulator + currentValue;
+
+  const totalPrice = price.reduce(reducerOfPrice, 0);
 
   //   console.log(cartProducts);
   let Product;
@@ -84,6 +103,19 @@ export const Cart = () => {
     }
   };
 
+  const [totalProducts, setTotalProducts] = useState(0);
+
+  useEffect(() => {
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        fs.collection("Cart" + user.uid).onSnapshot((snapshot) => {
+          const qty = snapshot.docs.length;
+          setTotalProducts(qty);
+        });
+      }
+    });
+  });
+
   return (
     <>
       <Navbar user={user} />
@@ -97,6 +129,18 @@ export const Cart = () => {
               cartProductIncrease={cartProductIncrease}
               cartProductDecrease={cartProductDecrease}
             />
+          </div>
+          <div className="summary-box">
+            <h5>Cart Summary</h5>
+            <br></br>
+            <div>
+              Total No of Products: <span>{totalQty}</span>
+            </div>
+            <div>
+              Total Price to Pay: <span>$ {totalPrice}</span>
+            </div>
+            <br></br>
+            <StripeCheckout></StripeCheckout>
           </div>
         </div>
       )}

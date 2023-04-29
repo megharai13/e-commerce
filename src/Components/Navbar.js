@@ -1,12 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import logo from "../Images/logo.png";
-// import { Icon } from "react-icons-kit";
-// import { shoppingCart } from "react-icons-kit/feather/shoppingCart";
+import { Icon } from "react-icons-kit";
+import { shoppingCart } from "react-icons-kit/feather/shoppingCart";
 import { auth } from "../Config/Config";
 import { useHistory } from "react-router-dom";
 
-export const Navbar = ({ user }) => {
+export const Navbar = ({ user, totalProducts }) => {
   const history = useHistory();
 
   const handleLogout = () => {
@@ -48,8 +48,7 @@ export const Navbar = ({ user }) => {
             </div>
             <div className="cart-menu-btn">
               <Link className="navlink" to="cart">
-                CART
-                {/* <Icon icon={shoppingCart} size={20} /> */}
+                <Icon icon={shoppingCart} size={20} />
               </Link>
             </div>
             <div className="btn btn-danger btn-md " onClick={handleLogout}>
