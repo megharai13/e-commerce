@@ -50,6 +50,7 @@ export const Navbar = ({ user, totalProducts }) => {
               <Link className="navlink" to="cart">
                 <Icon icon={shoppingCart} size={20} />
               </Link>
+              <span className="cart-indicator">{totalProducts}</span>
             </div>
             <div className="btn btn-danger btn-md " onClick={handleLogout}>
               LOGOUT

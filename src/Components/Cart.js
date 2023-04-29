@@ -114,11 +114,11 @@ export const Cart = () => {
         });
       }
     });
-  });
+  }, []);
 
   return (
     <>
-      <Navbar user={user} />
+      <Navbar user={user} totalProducts={totalProducts} />
       <br />
       {cartProducts.length > 0 && (
         <div className="container-fluid">
